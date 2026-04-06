@@ -122,7 +122,7 @@ export default function AdminDashboard() {
           {page === "complaints"    && <ComplaintsPage  complaints={complaints} setSelected={setSelected} setPage={handleSetPage} />}
           {page === "detail" && selected && <DetailPage complaint={selected} setComplaints={setComplaints} setPage={handleSetPage} />}
           {page === "analytics"     && <AnalyticsPage  complaints={complaints} />}
-          {page === "notifications" && <NotificationsPage />}
+          {page === "notifications" && <NotificationsPage complaints={complaints} setPage={handleSetPage} setSelected={setSelected} />}
           {page === "settings"      && <SettingsPage />}
         </main>
       </div>

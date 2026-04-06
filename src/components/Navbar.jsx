@@ -84,13 +84,14 @@ export default function Navbar({ isLoggedIn, loggedInName, handleLogout }) {
                 {loggedInName || 'Dashboard'}
               </Link>
               <button onClick={handleLogout} style={{
-                background: 'rgba(255,255,255,.08)', border: '1px solid rgba(255,255,255,.15)',
-                borderRadius: 10, padding: '7px 14px', color: 'rgba(255,255,255,.6)',
-                fontSize: 13, fontWeight: 600, cursor: 'pointer',
-                transition: 'all .15s',
+                background: 'rgba(239,68,68,0.15)', border: '1px solid rgba(239,68,68,0.3)',
+                borderRadius: 10, padding: '7px 14px', color: '#fca5a5',
+                fontSize: 13, fontWeight: 700, cursor: 'pointer',
+                transition: 'all .15s', display: 'flex', alignItems: 'center', gap: 6
               }}
-                onMouseEnter={e => { e.currentTarget.style.color = '#fc8181'; e.currentTarget.style.borderColor = 'rgba(252,129,129,.3)'; }}
-                onMouseLeave={e => { e.currentTarget.style.color = 'rgba(255,255,255,.6)'; e.currentTarget.style.borderColor = 'rgba(255,255,255,.15)'; }}>
+                onMouseEnter={e => { e.currentTarget.style.background = '#ef4444'; e.currentTarget.style.color = 'white'; e.currentTarget.style.borderColor = '#ef4444'; e.currentTarget.style.boxShadow = '0 4px 12px rgba(239,68,68,0.4)'; }}
+                onMouseLeave={e => { e.currentTarget.style.background = 'rgba(239,68,68,0.15)'; e.currentTarget.style.color = '#fca5a5'; e.currentTarget.style.borderColor = 'rgba(239,68,68,0.3)'; e.currentTarget.style.boxShadow = 'none'; }}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
                 Sign Out
               </button>
             </div>
@@ -171,9 +172,13 @@ export default function Navbar({ isLoggedIn, loggedInName, handleLogout }) {
           <div style={{ paddingTop: 16, display: 'flex', flexDirection: 'column', gap: 8 }}>
             {isLoggedIn ? (
               <button onClick={() => { handleLogout(); setMenuOpen(false); }} style={{
-                background: 'rgba(252,129,129,.15)', border: '1px solid rgba(252,129,129,.25)',
-                color: '#fc8181', borderRadius: 12, padding: '12px', fontWeight: 700, cursor: 'pointer',
-              }}>Sign Out</button>
+                background: 'rgba(239,68,68,0.15)', border: '1px solid rgba(239,68,68,0.3)',
+                color: '#fca5a5', borderRadius: 12, padding: '12px', fontWeight: 700, cursor: 'pointer',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8
+              }}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                Sign Out
+              </button>
             ) : (
               <>
                 <Link to="/signup" onClick={() => setMenuOpen(false)} style={{

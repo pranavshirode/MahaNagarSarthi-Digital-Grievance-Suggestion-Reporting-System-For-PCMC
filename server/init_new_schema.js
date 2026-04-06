@@ -86,7 +86,7 @@ async function init() {
         category VARCHAR(50) NOT NULL,
         ward_id INTEGER REFERENCES wards(id),
         department_id INTEGER REFERENCES departments(id),
-        user_id INTEGER REFERENCES users(id),
+        user_id UUID REFERENCES users(id),
         assigned_officer_id INTEGER REFERENCES officers(id),
         title VARCHAR(150),
         description TEXT,
@@ -124,7 +124,7 @@ async function init() {
 
       CREATE TABLE IF NOT EXISTS notifications (
         id SERIAL PRIMARY KEY,
-        user_id INTEGER REFERENCES users(id),
+        user_id UUID REFERENCES users(id),
         complaint_id INTEGER REFERENCES complaints(id),
         channel VARCHAR(50),
         message TEXT,

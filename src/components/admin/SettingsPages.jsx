@@ -1,16 +1,60 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { User, Lock, Globe, Save, CheckCircle2, Bell } from "lucide-react";
-import { NOTIFICATIONS } from "./constants";
 
 const G = "#1D9E75";
 const GD = "#073d2c";
 
-export function NotificationsPage() {
+export function NotificationsPage({ complaints = [], setPage, setSelected }) {
   const typeStyle = {
     new: { bg: "rgba(37,99,235,0.08)", dot: "#2563eb", color: "#1d4ed8", label: "New" },
     update: { bg: "rgba(245,158,11,0.08)", dot: "#f59e0b", color: "#d97706", label: "Update" },
     resolved: { bg: "rgba(29,158,117,0.08)", dot: G, color: GD, label: "Resolved" },
     rejected: { bg: "rgba(239,68,68,0.08)", dot: "#ef4444", color: "#dc2626", label: "Rejected" },
+  };
+
+  const dynamicNotifications = useMemo(() => {
+    let notifs = [];
+    complaints.forEach((c) => {
+      // Creation notification
+      notifs.push({
+        id: c.db_id + "_new",
+        type: "new",
+        text: `New complaint filed under ${c.category}: "${c.title}"`,
+        timeObj: new Date(c.created_at || c.date),
+        complaint: c
+      });
+      // Update notification
+      if (c.status === "In Progress" || c.status === "Assigned" || c.status === "Acknowledged") {
+        notifs.push({
+          id: c.db_id + "_update",
+          type: "update",
+          text: `Complaint ${c.id} status updated to ${c.status}.`,
+          timeObj: new Date(c.created_at || c.date), // Approximate
+          complaint: c
+        });
+      }
+      // Resolved notification
+      if (c.status === "Resolved" || c.status === "Closed") {
+        notifs.push({
+          id: c.db_id + "_resolved",
+          type: "resolved",
+          text: `Complaint ${c.id} has been fully resolved.`,
+          timeObj: new Date(c.resolved_at || c.created_at || c.date),
+          complaint: c
+        });
+      }
+    });
+    
+    // Sort by most recent
+    notifs.sort((a, b) => b.timeObj - a.timeObj);
+    return notifs.slice(0, 30); // Show max 30 recent things
+  }, [complaints]);
+
+  const getTimeAgo = (dateObj) => {
+    const diff = Math.floor((new Date() - dateObj) / 60000); // in mins
+    if (diff < 60) return `${diff || 1} min ago`;
+    if (diff < 1440) return `${Math.floor(diff / 60)} hours ago`;
+    return `${Math.floor(diff / 1440)} days ago`;
   };
 
   return (
@@ -32,7 +76,7 @@ export function NotificationsPage() {
             </div>
             <div>
               <h2 style={{ fontWeight: 800, color: "#1C1C1E", fontSize: 16, margin: 0 }}>Recent Notifications</h2>
-              <p style={{ color: "#8E8E93", fontSize: 11, marginTop: 2 }}>{NOTIFICATIONS.length} notifications</p>
+              <p style={{ color: "#8E8E93", fontSize: 11, marginTop: 2 }}>{dynamicNotifications.length} notifications</p>
             </div>
           </div>
           <button
@@ -46,10 +90,18 @@ export function NotificationsPage() {
           >Mark all read</button>
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-          {NOTIFICATIONS.map(n => {
+          {dynamicNotifications.length === 0 && (
+            <p style={{ fontSize: 13, color: "#8E8E93", textAlign: "center", padding: "20px 0" }}>No recent notifications.</p>
+          )}
+          {dynamicNotifications.map(n => {
             const s = typeStyle[n.type] || typeStyle.new;
             return (
-              <div key={n.id} style={{
+              <div key={n.id} onClick={() => {
+                if (setSelected && setPage) {
+                  setSelected(n.complaint);
+                  setPage("detail");
+                }
+              }} style={{
                 display: "flex", alignItems: "flex-start", gap: 12,
                 padding: "12px 14px", borderRadius: 14,
                 background: s.bg, cursor: "pointer",
@@ -70,7 +122,7 @@ export function NotificationsPage() {
                     }}>{s.label}</span>
                   </div>
                   <p style={{ fontSize: 13, fontWeight: 600, color: "#1C1C1E", margin: 0 }}>{n.text}</p>
-                  <p style={{ fontSize: 11, color: "#8E8E93", marginTop: 3 }}>{n.time}</p>
+                  <p style={{ fontSize: 11, color: "#8E8E93", marginTop: 3 }}>{getTimeAgo(n.timeObj)}</p>
                 </div>
               </div>
             );

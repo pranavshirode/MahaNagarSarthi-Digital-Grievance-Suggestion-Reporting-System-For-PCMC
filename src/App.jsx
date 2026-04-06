@@ -42,43 +42,32 @@ export default function App() {
     <Router>
       <div className="min-h-screen bg-slate-50 font-sans text-slate-900 flex flex-col">
         {!isAdmin && <Navbar isLoggedIn={isLoggedIn} loggedInName={loggedInName} handleLogout={handleLogout} />}
-        
+
         <main className="flex-grow">
           <Routes>
             <Route path="/" element={<LandingPage isLoggedIn={isLoggedIn} />} />
-            
+
             <Route path="/login" element={
-              isLoggedIn ? <Navigate to={isAdmin ? "/admin" : "/dashboard"} /> : 
-              <LoginPage setIsLoggedIn={setIsLoggedIn} setIsAdmin={setIsAdmin} setLoggedInName={setLoggedInName} />
+              isLoggedIn ? <Navigate to={isAdmin ? "/admin" : "/dashboard"} /> :
+                <LoginPage setIsLoggedIn={setIsLoggedIn} setIsAdmin={setIsAdmin} setLoggedInName={setLoggedInName} />
             } />
-            
+
             <Route path="/signup" element={
               isLoggedIn ? <Navigate to="/dashboard" /> :
-              <SignupPage setIsLoggedIn={setIsLoggedIn} setIsAdmin={setIsAdmin} setLoggedInName={setLoggedInName} />
+                <SignupPage setIsLoggedIn={setIsLoggedIn} setIsAdmin={setIsAdmin} setLoggedInName={setLoggedInName} />
             } />
-            
+
             {/* Admin Route */}
             <Route path="/admin" element={
               isAdmin ? (
                 <div className="min-h-screen bg-slate-50 w-full flex flex-col">
-                  <div className="bg-slate-900 text-white text-xs flex items-center justify-between px-6 py-2">
-                    <span className="text-slate-400">
-                      Logged in as <span className="text-blue-400 font-bold">Administrator</span>
-                    </span>
-                    <button
-                      onClick={handleLogout}
-                      className="text-red-400 hover:text-red-300 font-semibold transition-colors"
-                    >
-                      ⏻ Logout
-                    </button>
-                  </div>
                   <div className="flex-grow">
                     <AdminDashboard />
                   </div>
                 </div>
               ) : <Navigate to="/login" />
             } />
-            
+
             {/* Citizen Feature Routes */}
             <Route path="/dashboard" element={
               isLoggedIn && !isAdmin ? <CitizenDashboard /> : <Navigate to="/login" />
@@ -91,7 +80,7 @@ export default function App() {
             } />
           </Routes>
         </main>
-        
+
         {!isAdmin && <Footer />}
       </div>
     </Router>

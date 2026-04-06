@@ -1,9 +1,9 @@
+import { useMemo } from "react";
 import {
   BarChart, Bar, Cell,
-  LineChart, Line,
   XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
 } from "recharts";
-import { CATEGORIES, STATUSES, CAT_COLORS, PIE_COLORS, MONTHLY } from "./constants";
+import { CATEGORIES, STATUSES, CAT_COLORS, PIE_COLORS } from "./constants";
 
 const G = "#1D9E75";
 const GD = "#073d2c";
@@ -20,6 +20,31 @@ export default function AnalyticsPage({ complaints }) {
   const statData = STATUSES.map(s => ({
     name: s, value: complaints.filter(c => c.status === s).length
   }));
+
+  const monthlyTrend = useMemo(() => {
+    const months = [];
+    const today = new Date();
+    for (let i = 5; i >= 0; i--) {
+      const d = new Date(today.getFullYear(), today.getMonth() - i, 1);
+      months.push({ 
+        month: d.toLocaleString('en-US', { month: 'short' }), 
+        year: d.getFullYear(), numMonth: d.getMonth(), 
+        complaints: 0, resolved: 0 
+      });
+    }
+    
+    complaints.forEach(c => {
+      const d = new Date(c.created_at || c.date);
+      const mIdx = months.findIndex(m => m.numMonth === d.getMonth() && m.year === d.getFullYear());
+      if (mIdx !== -1) {
+        months[mIdx].complaints += 1;
+        if (c.status === "Resolved" || c.status === "Closed" || c.status === "Resolved") {
+          months[mIdx].resolved += 1;
+        }
+      }
+    });
+    return months;
+  }, [complaints]);
 
   const kpis = [
     { label: "Resolution Rate", value: `${total ? Math.round((resolved / total) * 100) : 0}%`, sub: "complaints resolved", color: G, bg: "#E1F5EE" },
@@ -113,7 +138,7 @@ export default function AnalyticsPage({ complaints }) {
           }}>Last 6 months</span>
         </div>
         <ResponsiveContainer width="100%" height={220}>
-          <BarChart data={MONTHLY} margin={{ top: 0, right: 10, left: -20, bottom: 0 }}>
+          <BarChart data={monthlyTrend} margin={{ top: 0, right: 10, left: -20, bottom: 0 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
             <XAxis dataKey="month" tick={{ fontSize: 11, fill: "#94a3b8" }} axisLine={false} tickLine={false} />
             <YAxis tick={{ fontSize: 11, fill: "#94a3b8" }} axisLine={false} tickLine={false} />

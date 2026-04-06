@@ -145,9 +145,16 @@ export function Sidebar({ page, setPage, collapsed, setCollapsed, mobileOpen, se
             <button
               onClick={() => { localStorage.removeItem("token"); localStorage.removeItem("user"); navigate("/"); }}
               title="Logout"
-              style={{ background: "none", border: "none", cursor: "pointer", padding: 4 }}
+              style={{
+                background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)",
+                borderRadius: 10, cursor: "pointer", padding: "8px",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                transition: "all 0.2s"
+              }}
+              onMouseEnter={e => { e.currentTarget.style.background = "rgba(239,68,68,0.2)"; e.currentTarget.style.borderColor = "rgba(239,68,68,0.4)"; }}
+              onMouseLeave={e => { e.currentTarget.style.background = "rgba(239,68,68,0.1)"; e.currentTarget.style.borderColor = "rgba(239,68,68,0.2)"; }}
             >
-              <LogOut size={15} style={{ color: "rgba(255,255,255,0.35)" }} />
+              <LogOut size={16} style={{ color: "#ef4444" }} />
             </button>
           </div>
         </div>

@@ -224,12 +224,12 @@ export const updateStatus = async (req, res, next) => {
 
     // Update complaint (the trigger logs the timeline_event automatically, or we log manually if no trigger defined for it)
     await client.query(
-      `UPDATE complaints SET status = $1,
-         acknowledged_at = CASE WHEN $1 = 'acknowledged' THEN NOW() ELSE acknowledged_at END,
-         assigned_at     = CASE WHEN $1 = 'assigned'     THEN NOW() ELSE assigned_at END,
-         resolved_at     = CASE WHEN $1 = 'resolved'     THEN NOW() ELSE resolved_at END,
-         closed_at       = CASE WHEN $1 = 'closed'       THEN NOW() ELSE closed_at END,
-         resolution_note = COALESCE($3, resolution_note)
+      `UPDATE complaints SET status = CAST($1 AS VARCHAR),
+         acknowledged_at = CASE WHEN CAST($1 AS VARCHAR) = 'acknowledged' THEN NOW() ELSE acknowledged_at END,
+         assigned_at     = CASE WHEN CAST($1 AS VARCHAR) = 'assigned'     THEN NOW() ELSE assigned_at END,
+         resolved_at     = CASE WHEN CAST($1 AS VARCHAR) = 'resolved'     THEN NOW() ELSE resolved_at END,
+         closed_at       = CASE WHEN CAST($1 AS VARCHAR) = 'closed'       THEN NOW() ELSE closed_at END,
+         resolution_note = COALESCE(CAST($3 AS TEXT), resolution_note)
        WHERE id = $2`,
       [status, id, note || null]
     );
@@ -237,9 +237,14 @@ export const updateStatus = async (req, res, next) => {
     // Override the system timeline event note with the officer's note
     if (note) {
       await client.query(
-        `UPDATE timeline_events SET note = $1, actor_type = 'officer', actor_id = $2
-         WHERE complaint_id = $3 AND status = $4
-         ORDER BY created_at DESC LIMIT 1`,
+        `UPDATE timeline_events
+         SET note = $1, actor_type = 'officer', actor_id = $2
+         WHERE id = (
+           SELECT id FROM timeline_events 
+           WHERE complaint_id = $3 AND status = $4
+           ORDER BY created_at DESC 
+           LIMIT 1
+         )`,
         [note, userId, id, status]
       );
     }
