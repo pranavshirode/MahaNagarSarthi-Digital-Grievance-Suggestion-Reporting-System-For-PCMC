@@ -97,7 +97,7 @@ export default function Footer() {
             Developed By
           </p>
           <p style={{ fontSize: 14, color: 'white', fontWeight: 600, marginBottom: 12 }}>
-            IIT Department, PCCOE College
+            IT Department, PCCOE College
           </p>
           <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center' }}>
             <a href="https://www.linkedin.com/in/pranav-shirode-8b91252b2" target="_blank" rel="noreferrer" style={{ fontSize: 13, color: '#5DCAA5', textDecoration: 'none', fontWeight: 500 }}>Pranav Shirode</a>
@@ -106,7 +106,7 @@ export default function Footer() {
             <span style={{ fontSize: 12, color: 'rgba(255,255,255,.2)' }}>|</span>
             <span style={{ fontSize: 13, color: '#5DCAA5', fontWeight: 500 }}>Sarvadnya Chaudhari</span>
             <span style={{ fontSize: 12, color: 'rgba(255,255,255,.2)' }}>|</span>
-            <span style={{ fontSize: 13, color: '#5DCAA5', fontWeight: 500 }}>Omreaje Shelkhe</span>
+            <span style={{ fontSize: 13, color: '#5DCAA5', fontWeight: 500 }}>Omraje Shelkhe</span>
           </div>
         </div>
 
